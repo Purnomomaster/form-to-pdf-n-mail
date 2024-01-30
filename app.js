@@ -15,7 +15,7 @@ app.get("/", function (req, response) {
 
 const upload = multer();
 
-app.post("/img", upload.none(), function (req, res, next) {
+app.post("/", upload.none(), function (req, res, next) {
   // req.body contains the text fields
   // console.log(req.body.file); // Logs form body values
   const transporter = nodemailer.createTransport({

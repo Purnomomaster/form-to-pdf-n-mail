@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>html form to pdf and mail it</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  </head>
+
+  <body>
+    <div class="container">
+      <form>
+      <input type="text" id="name" placeholder="Enter your name" required />
+      <input
+              id="image"
+              type="file"
+              accept="image/*"
+              onchange="loadFile(event)"
+            />
+          </div>
+      <input type="submit" class="button" value="Submit" />
+    </form>
+        <img id="output" />
+    </div>
+
+    <script type="text/javascript">
+      var loadFile = function (event) {
+        var reader = new FileReader();
+        reader.onload = function () {
+        var output = document.getElementById("output");
+        output.src = reader.result;
+      };
+      reader.readAsDataURL(event.target.files[0]);
+      };
+      const image = document.getElementById("output");
+      image.style.display = "none";
+      
+      var form = document.querySelector("form");
+      form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const { jsPDF } = window.jspdf;
+      var doc = new jsPDF()
+      const name = document.getElementById("name").value;
+      doc.text(name, 10, 10);
+      doc.addImage(image, "JPEG", 30, 30, 40, 20);
+      var formData = new FormData();
+      formData.append("file", doc.output("datauristring").split("base64,")[1]);
+      fetch("http://127.0.0.1:3000", {
+      method: "POST",
+      body: formData,
+      });
+    </script>
+  </body>
+</html>
